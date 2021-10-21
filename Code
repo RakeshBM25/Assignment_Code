@@ -1,57 +1,212 @@
-/// <reference types="cypress" />
+//import { contains } from "cypress/types/jquery"
 
-//const { data } = require("cypress/types/jquery");
 
 describe("Test of the Assignment1", () =>{
-   
 
-      
-        beforeEach(function () {
-            cy.fixture('./textdata.json').then((text) => {
-              this.text = text
-            })
+    beforeEach(function () {
+        cy.fixture('./textdata.json').then((text) => {
+          this.text = text
           })
 
-    it("Login_Assignment", () => {
 
+          
+      })
+      afterEach(function () {} )
+
+      it('navigate to the website', function () {
         cy.visit("https://www.lookfantastic.com");
- 
+    })
+    
+    
+    it.skip('click on register button', function () {
         cy.get('.responsiveAccountHeader_accountRegister').invoke('show').click({force: true});
+
+        cy.PopUp();
+    })
         
-        cy.get("body").then($body => {
-            if ($body.find("div[data-testid='international-overlay-content']").length > 0) {   
-            //evaluates as true if button exists at all
-                cy.get("div[data-testid='international-overlay-content']").then($header => {
-                  if ($header.is(':visible')){
-                        cy.get("button[data-testid='international-overlay-close-button']").click();
-                } else {
-                    //you get here only if button EXISTS but is INVISIBLE
-                  }
-                });
-            } else {
-                     
-                 assert.isOk('everything','everything is OK');
-            }
-        }); 
+     
+    it.skip('Insert data into fields', ()=> {
 
+      cy.fixture("textdata").as("text")
+
+      cy.get("@text").then((text) => {
+             
+        cy.xpath("//input[contains(@id, 'full-name-input-element-id')]").type(text.Name);
+        cy.get("input[name='Email address']").type(text.Email_ADD);
+        cy.xpath("//div//input[contains(@id, 'confirm-email-address-input-element-id')]").type(text.Cof_Email);
+        cy.get("input[name='Password']").type(text.Password);
+        cy.xpath("//div//input[contains(@id, 'confirm-password-input-element-id')]").type(text.Cof_Password);
+        cy.get("div[data-testid='radio-input-container-yes-please']").click();
+
+        cy.get("button[data-testid='button-submit-register']").click();
+
+      })
+
+    })
+
+      it.skip('CLiking on account page', ()=> {
+          
+        cy.wait(10000);
+        cy.PopUp();
+        cy.get("div[data-component='responsiveAccountHeader']").click();
+
+      })
+     
+      it.skip('Opening account page', ()=> {
+
+        cy.get("a[href='https://www.lookfantastic.com/accountHome.account']").click();
         
-        it('Validate successful Login', function () {
+        //cy.wait(10000);
+        cy.PopUp();
+        cy.fixture("textdata").as("text")
 
-            cy.get("div[label='Full Name']").type(this.text.Name);
+        cy.get("@text").then((text) => {
 
+          cy.get("input[name='Email address']").type(text.Email_ADD);
+          cy.get("input[name='Password']").type(text.Password);
+          cy.get("button[data-testid='button-submit-login']").click();
+          
+         
+          cy.wait(50000);
+          cy.PopUp();
+        
         })
-           
+  
+      })
+         
+      it.skip('Asserting the username', ()=> {
+
         
+        cy.PopUp();
+        cy.fixture("textdata").as("text1")
 
-
-        //cy.get("input[type='email']").type("Rakeshwins@gmail.com");
-        //cy.get("#password-input-element").type("Rakesh@25494");
-        //cy.get("#button-submit-login").click();
-        //cy.get('.responsiveAccountHeader_accountRegister').invoke('show').click({force:true});
-
-   
-    })
-    
-    
+        cy.get("@text1").then((text1) => {
+      //  cy.xpath("//*[@id='mainContent']/div[1]/div[1]/p").should('contain',text.Name);
+       
+      })
 
     })
+    
+    it.skip('Loging Out ' , ()=> {
+
+      cy.wait(10000);
+      cy.PopUp();
+
+      cy.get("div[data-component='responsiveAccountHeader']").click();
+      cy.get("button[data-context='logout']").click();
+    })
+
+      it('Loging In ' , ()=> {
+      cy.wait(10000);
+      cy.PopUp();
+
+      cy.get("div[data-component='responsiveAccountHeader']").click();
+      cy.get("a[href='https://www.lookfantastic.com/accountHome.account']").click();
+
+      cy.fixture("textdata").as("text")
+
+        cy.get("@text").then((text) => {
+
+         //cy.xpath("//input[contains(@id, 'email-address-input-element')]").type(text.Email_ADD);
+         //cy.xpath("//input[contains(@id, 'password-input-element')]").type(text.Password);
+         //cy.get("button[data-testid='button-submit-login']").click();
+
+          cy.get("input[id='username']").type(text.Email_ADD);
+          cy.get("input[id='password']").type(text.Password);
+          cy.get("button[id='login-submit']").click();
+
+          cy.PopUp();
+
+          cy.wait(30000);
+      
+    })
+
+  })
+
+  it.skip('Serach for the item' , ()=> {
+
+          cy.get("div[data-component='headerSearch']").click();
+          cy.get("input[id='header-search-input']").type("salt");
+          cy.get("button[data-js-element='headerSearch_button']").click();
+          
+          cy.PopUp();
+          cy.wait(10000);
+          cy.PopUp();
+
+          
+         // cy.get("div[class='productBlock_imageContainer']").eq(0).click();
+  })
+
+  it.skip('Takeing screenshot' , ()=> {
+
+    cy.wait(10000);
+    
+    cy.get("div[class='productBlock_imageContainer']").eq(0).first().screenshot();
+    
+    })
+
+    it.skip('Count number of item in basket' , ()=> {
+
+      cy.get("span[data-js-element='itemsCount']").should('contain', '0');
+
+    })
+
+    it.skip('clicking on add to basket' , ()=> {
+
+      cy.get("button[data-component='productQuickbuySimple']").eq(0).click();
+
+      cy.wait(10000);
+
+     // cy.get("a[href='/my.basket']").click();
+     cy.xpath("//a[contains(@class, 'addedToBasketModal_viewBasketButton')]").click({force:true});
+
+     cy.PopUp();
+    })
+
+    it.skip('Asserting basket count incresed to 1' , ()=> {
+
+      cy.get("span[data-js-element='itemsCount']").should('contain', '1');
+
+    })
+
+    it.skip('Deleing the product from the basket' , ()=> {
+
+      cy.get("a[aria-label='Remove this item']").click();
+     // cy.get("button[id='responsiveFlyoutBasket_openBasketButtonMobile']").click();
+
+      //cy.get("a[class='responsiveFlyoutBasket_viewBasketLink']").click();
+
+
+
+    })
+    it('Fill in Preferences', function () {
+
+      cy.get("div[data-component='responsiveAccountHeader']").click();
+      cy.get("a[href='https://www.lookfantastic.com/accountHome.account']").click();
+
+      cy.get("a[class='responsiveBeautyProfileCard_button']").click();
+
+      cy.xpath("//button[@class='profileService_headerWrapper-getStarted']").click();
+
+      cy.get("input[value='fair']").check();
+      cy.get("button[aria-label='Next']").click();
+      cy.get(10000);
+      cy.xpath("//input[contains(@id, 'profiles_lfSkinTypeV2_normal')]").click();
+      cy.get("button[aria-label='Next']").click();
+      cy.get(10000);
+      cy.xpath("//input[contains(@id, 'profiles_lfSkinConcernsV2_fineLines')]").click();
+      cy.get("button[aria-label='Next']").click();
+      cy.get(10000);
+      cy.xpath("//input[contains(@id, 'profiles_lfMakeupLookV2_eyes')]").click();
+      cy.get("button[aria-label='Next']").click();
+      cy.get(10000);
+      cy.xpath("//input[contains(@id, 'profiles_lfHairColourV2_black')]").click();
+      cy.get("button[aria-label='Next']").click();
+    })
+        
+      })
+    
+
+
+      
+    
